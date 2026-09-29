@@ -1,9 +1,7 @@
-# ur3_llm_control – Điều khiển UR3e bằng ngôn ngữ tự nhiên (LLM + MoveIt 2)
+# ur3_llm_control
 
-- Sinh viên: **Nguyễn Trần Thu Thảo** – MSSV **23020772**
 - Nhiệm vụ cá nhân: P = 72 mod 6 = **0** → Zone A = **red**, Zone B = **yellow**, Zone C = **blue**
-- Môi trường: Ubuntu 22.04 (WSL2) · ROS 2 Humble · MoveIt 2 · Gazebo Classic 11 · UR3e · LLM qua 9Router
-- Video demo: `<link Google Drive>`
+- Video demo: https://drive.google.com/file/d/1PTiN2Zz_rItRLPLQlxM9bLKd8d_LTlPn/view?usp=sharing
 
 ## 1. Kiến trúc
 
@@ -135,8 +133,8 @@ Terminal 3 – node LLM (đợi terminal 2 hiện `joint_trajectory_controller` 
 ros2 run ur3_llm_control llm_robot_node
 ```
 ```
-Command> Please put the red cube in zone B.
-Command> Hãy lấy khối màu vàng và đặt nó vào ô A.
+Command> Put the red cube in zone B.
+Command> lấy khối màu vàng và đặt nó vào ô A.
 Command> Move the green cube to zone D.
 Command> Arrange all objects according to my student ID.
 Command> state
@@ -185,4 +183,3 @@ home() .......................... SUCCESS
 
 TASK SUCCESS
 ```
-(Ở lần chạy này khối vàng đang nằm ở zone A từ lệnh trước, nên executor dời nó sang vùng tạm trước.)
