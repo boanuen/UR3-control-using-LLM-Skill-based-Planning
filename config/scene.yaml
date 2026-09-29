@@ -1,0 +1,30 @@
+# Mo ta moi truong (don vi: m, frame = world = base cua robot, robot nhin theo +x)
+# File nay dung chung cho: Gazebo world, planning scene cua MoveIt, skill va prompt LLM.
+frame: world
+group: ur_manipulator
+ee: tool0
+
+table: {x: 0.30, y: 0.0, sx: 0.34, sy: 0.80, h: 0.10}   # tam, kich thuoc, chieu cao mat ban
+cube: 0.04                                              # canh khoi lap phuong
+
+objects:                 # vi tri ban dau (x, y) tren ban
+  red_cube:    {xy: [0.22, -0.16], rgba: [0.9, 0.1, 0.1, 1.0]}
+  yellow_cube: {xy: [0.22,  0.00], rgba: [0.95, 0.85, 0.1, 1.0]}
+  blue_cube:   {xy: [0.22,  0.16], rgba: [0.1, 0.3, 0.9, 1.0]}
+
+zones:                   # vung dat vat
+  zone_a: {xy: [0.38,  0.16], rgba: [0.2, 0.8, 0.2, 0.6]}
+  zone_b: {xy: [0.38,  0.00], rgba: [0.9, 0.5, 0.1, 0.6]}
+  zone_c: {xy: [0.38, -0.16], rgba: [0.6, 0.2, 0.8, 0.6]}
+
+# Vung tam: chi executor dung khi zone dich dang bi chiem 
+tmp:
+  tmp_1: [0.29, -0.31]
+  tmp_2: [0.29,  0.31]
+
+home: [0.0, -1.57, 1.57, -1.57, -1.57, 0.0]   # 6 goc khop, tool huong xuong
+
+up: 0.12        # do cao tiep can phia tren vat
+gap: 0.008      # k/c tool0 - mat tren khoi khi kep
+shrink: 0.008   # thu nho hop va cham cua khoi khi dang cam (tranh bao va cham voi mat ban)
+vel: 0.3        # ti le van toc / gia toc
