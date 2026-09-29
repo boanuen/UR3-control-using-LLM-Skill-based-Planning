@@ -18,7 +18,7 @@ Skill Executor     skill_executor.py  xử lý zone bị chiếm, chạy từng 
         ↓
 Robot Skills       robot_skills.py    home / pick / place / move_above / move_to_zone
         ↓
-MoveIt 2           moveit_if.py       IK, lập kế hoạch, tránh va chạm, thực thi
+MoveIt 2           moveit_if.py       IK, lập kế hoạch, tránh va chạm, execute
         ↓
 UR3e (Gazebo)
 ```
@@ -32,11 +32,11 @@ tọa độ nằm trong `config/scene.yaml`, góc khớp do IK của MoveIt tín
 ur3_llm_control/
 ├── config/
 │   ├── scene.yaml            bàn, 3 khối, 3 zone, 2 vùng tạm, tư thế home
-│   ├── student_config.yaml   họ tên, MSSV, cấu hình 9Router (model, model dự phòng)
+│   ├── student_config.yaml   họ tên, MSSV, cấu hình 9Router
 │   └── prompt.txt            system prompt gửi cho LLM
 ├── launch/
 │   ├── sim.launch.py         Gazebo + UR3e + ros2_control + MoveIt 2 + RViz
-│   └── llm_robot.launch.py   sim.launch.py + node LLM (nhận lệnh qua topic)
+│   └── llm_robot.launch.py   sim.launch.py + node LLM 
 ├── ur3_llm_control/
 │   ├── llm_robot_node.py     node ROS 2 chính
 │   ├── llm_planner.py        tạo prompt, gọi 9Router, lấy JSON
@@ -44,18 +44,18 @@ ur3_llm_control/
 │   ├── skill_executor.py     sửa plan khi zone bị chiếm, chạy plan, in kết quả
 │   ├── robot_skills.py       các robot skill
 │   ├── moveit_if.py          giao tiếp MoveIt 2 + gripper ảo trong Gazebo
-│   ├── scene.py              đọc scene.yaml + trạng thái (khối nào ở đâu, đang cầm gì)
+│   ├── scene.py              đọc scene.yaml + trạng thái
 │   ├── student.py            P = XX mod 6 và bảng màu → zone
 │   ├── world_gen.py          sinh world Gazebo từ scene.yaml
 │   ├── send_command.py       gửi 1 lệnh lên topic /llm_robot/command
-│   ├── offline_cli.py        thử LLM không cần Gazebo (robot giả)
+│   ├── offline_cli.py        thử LLM không cần Gazebo 
 │   └── fake_robot.py         robot giả dùng cho test
 └── test/test_basic.py        15 unit test (không cần ROS, không cần mạng)
 ```
 
 ## 3. Robot skills
 
-| Skill | Các bước (tất cả qua MoveIt 2) |
+| Skill | Các bước |
 |---|---|
 | `home()` | về 6 góc khớp home |
 | `move_above(object)` | tool0 lên trên khối 12 cm, tool hướng xuống |
@@ -67,18 +67,18 @@ ur3_llm_control/
 Trạng thái trả về: `SUCCESS`, `FAILED`, `INVALID_OBJECT`, `INVALID_ZONE`, `PLANNING_FAILED`
 (executor in thêm `SKIPPED` khi khối đã đúng chỗ, `NOT RUN` cho các bước sau khi có lỗi).
 
-- **Di chuyển tới điểm:** gọi `/compute_ik` với seed là tư thế home để ra góc khớp, rồi MoveIt
-  lập kế hoạch trong không gian khớp. Nhờ seed cố định, robot luôn ở tư thế "gần home" và không
+- **Di chuyển tới điểm:** gọi `/compute_ik` với seed là tư thế home để ra góc khớp, MoveIt
+  lập kế hoạch trong không gian khớp. Nhờ seed cố định, robot luôn ở tư thế gần home, không
   bị xoắn khớp tới giới hạn.
 - **Hạ / nhấc:** đi thẳng đứng bằng `/compute_cartesian_path` với `avoid_collisions=True`.
 - **An toàn:** URDF bật `safety_limits`. Bàn và 3 khối nằm trong planning scene, khối đang cầm
   được gắn vào tool0, nên MoveIt kiểm tra self-collision và va chạm môi trường cho mọi chuyển động.
-- **Gripper ảo:** UR3e không có gripper. "Kẹp" = gắn khối vào tool0 trong MoveIt, còn trong Gazebo
+- **Gripper ảo:** UR3e không có gripper. Kẹp = gắn khối vào tool0 trong MoveIt, còn trong Gazebo
   một timer 20 Hz đặt khối theo tool0 (`/gazebo/set_entity_state`).
 
 ## 4. Plan Validator
 
-1. Output phải có dạng `{"plan": [...]}`, tối đa 20 bước.
+1. Output có dạng `{"plan": [...]}`, tối đa 20 bước.
 2. Skill thuộc `home, pick, place, move_above, move_to_zone`, đúng tham số.
    Tham số lạ (vd `"joints"`, `"trajectory"`) → từ chối.
 3. `object` ∈ {red_cube, yellow_cube, blue_cube}, `zone` ∈ {zone_a, zone_b, zone_c}.
@@ -111,8 +111,7 @@ source install/setup.bash
 npm install -g 9router
 9router                       # dashboard: http://localhost:20128
 ```
-Trong dashboard: kết nối provider (vd **Gemini** bằng API key của Google AI Studio), tạo API key
-của 9Router, rồi đặt key vào biến môi trường (không ghi key vào file config):
+Trong dashboard: kết nối provider, tạo API key của 9Router, rồi đặt key vào biến môi trường (không ghi key vào file config):
 
 ```bash
 echo 'export NINE_KEY="sk-..."' >> ~/.bashrc && source ~/.bashrc
