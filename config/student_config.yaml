@@ -1,0 +1,9 @@
+student_name: "Nguyen Tran Thu Thao"
+student_id: "23020772"
+
+llm:
+  base_url: "http://localhost:20128/v1"
+  api_key: ""        # dung: export NINE_KEY="sk-..."
+  model: "gemini/gemini-3.8-flash"
+  tries: 2
+  backup_model: "oc/muse-spark-1.3-contributor-free"   # dung khi model chinh loi
